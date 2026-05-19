@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -131,6 +131,13 @@ REST_FRAMEWORK = {
         "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 5,
 
-    "DEFAULT_AUTHENTICATION_CLASSES":
+    "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFE_TIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFE_TIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKEN": False,
 }
