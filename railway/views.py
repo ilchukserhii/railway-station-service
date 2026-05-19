@@ -51,7 +51,7 @@ class TripViewSet(viewsets.ModelViewSet):
         if train:
             queryset = queryset.filter(train__train_type__name__icontains=train)
 
-        return queryset
+        return queryset.order_by("id")
 
     def get_serializer_class(self):
         if self.action == "list":
