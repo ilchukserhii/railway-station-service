@@ -41,7 +41,7 @@ class Route(models.Model):
         )
 
     def __str__(self):
-        return f"{self.source} -> {self.destination} (distance: {self.distance} km)"
+        return f"{self.source.name} -> {self.destination.name} (distance: {self.distance} km)"
 
 
 class Station(models.Model):
@@ -82,6 +82,11 @@ class Trip(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
     crew = models.ManyToManyField("Crew", related_name="trips")
+    price = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=1000,
+    )
 
     def clean(self):
         if not self.arrival_time > self.departure_time:
@@ -187,6 +192,7 @@ class Ticket(models.Model):
             using = using,
             update_fields = update_fields,
         )
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
