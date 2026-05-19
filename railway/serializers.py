@@ -68,7 +68,7 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
-        fields = ("id", "route", "train", "departure_time", "arrival_time", "crew")
+        fields = ("id", "route", "price", "train", "departure_time", "arrival_time", "crew")
 
 
 class TripListSerializer(serializers.ModelSerializer):
@@ -84,7 +84,7 @@ class TripListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trip
-        fields = ("id", "route", "train", "departure_time", "arrival_time", "crew", "tickets_available")
+        fields = ("id", "route", "price", "train", "departure_time", "arrival_time", "crew", "tickets_available")
 
     def get_crew(self, obj):
         roles = [member.role for member in obj.crew.all()]
@@ -198,7 +198,7 @@ class TripRetrieveSerializer(TripSerializer):
     )
     class Meta:
         model = Trip
-        fields = ("id", "route", "train", "taken_places", "crew")
+        fields = ("id", "route", "price", "train", "taken_places", "crew")
 
 
 class OrderListSerializer(serializers.ModelSerializer):
