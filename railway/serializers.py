@@ -80,26 +80,19 @@ class TripListSerializer(serializers.ModelSerializer):
         slug_field="train_type.name",
     )
     crew = serializers.SerializerMethodField()
+    tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Trip
-        fields = ("id", "route", "train", "departure_time", "arrival_time", "crew")
+        fields = ("id", "route", "train", "departure_time", "arrival_time", "crew", "tickets_available")
 
     def get_crew(self, obj):
-        roles = list(
-            obj.crew.values_list("role", flat=True)
-        )
+        roles = [member.role for member in obj.crew.all()]
 
         return {
             "members_count": len(roles),
             "roles": roles,
         }
-
-
-class TripRetrieveSerializer(TripSerializer):
-    route = RouteListSerializer(read_only=True)
-    train = TrainListSerializer(read_only=True)
-    crew = CrewSerializer(many=True, read_only=True)
 
 
 class TripForTrainSerializer(serializers.ModelSerializer):
@@ -188,6 +181,24 @@ class TicketForOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ("id", "wagon_num", "seat")
+
+
+class TicketForTripSerializer(TicketSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("wagon_num", "seat")
+
+
+class TripRetrieveSerializer(TripSerializer):
+    route = RouteListSerializer(read_only=True)
+    train = TrainListSerializer(read_only=True)
+    crew = CrewSerializer(many=True, read_only=True)
+    taken_places = TicketForTripSerializer(
+        source="tickets", many=True, read_only=True
+    )
+    class Meta:
+        model = Trip
+        fields = ("id", "route", "train", "taken_places", "crew")
 
 
 class OrderListSerializer(serializers.ModelSerializer):

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.db.models import Q
+from django.db.models import Q, F
 from django.db.models.aggregates import Count
 from django.utils import timezone
 from rest_framework import mixins, viewsets
@@ -29,7 +29,8 @@ class TripViewSet(viewsets.ModelViewSet):
                 "train__train_type",
             ).prefetch_related(
                 "crew"
-            )
+            ).annotate(tickets_available=F("train__seats_in_wagon") * F("train__wagons_num")
+                       - Count("tickets", distinct=True))
 
         if departure:
             date = datetime.strptime(departure, "%Y-%m-%d").date()
@@ -41,8 +42,8 @@ class TripViewSet(viewsets.ModelViewSet):
 
         if route:
             queryset = queryset.filter(
-                Q(tickets__trip__route__source__name__icontains=route) |
-                Q(tickets__trip__route__destination__name__icontains=route)
+                Q(route__source__name__icontains=route) |
+                Q(route__destination__name__icontains=route)
             )
 
         if train:
