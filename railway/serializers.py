@@ -135,6 +135,7 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ("id", "wagon_num", "seat", "trip", "order")
+        read_only_fields = ("order",)
 
 
 class OrderSerializer(serializers.ModelSerializer):
