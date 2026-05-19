@@ -205,10 +205,11 @@ class OrderListSerializer(serializers.ModelSerializer):
     tickets_count = serializers.IntegerField(read_only=True)
     departure_time = serializers.SerializerMethodField()
     route = serializers.SerializerMethodField()
+    total_price = serializers.DecimalField(max_digits=8, decimal_places=2, read_only=True)
 
     class Meta:
         model = Order
-        fields = ("id", "created_at", "tickets_count", "departure_time", "route")
+        fields = ("id", "created_at", "tickets_count", "departure_time", "route", "total_price")
 
     def get_departure_time(self, obj):
         ticket = obj.tickets.all()
@@ -229,10 +230,11 @@ class OrderListSerializer(serializers.ModelSerializer):
 class OrderRetrieveSerializer(OrderSerializer):
     trip = serializers.SerializerMethodField()
     tickets = TicketForOrderSerializer(many=True, read_only=True)
+    total_price = serializers.DecimalField(max_digits=8, decimal_places=2, read_only=True)
 
     class Meta:
         model = Order
-        fields = ("id", "created_at", "trip", "tickets")
+        fields = ("id", "created_at", "trip", "tickets", "total_price")
 
     def get_trip(self, obj):
         ticket = obj.tickets.all()

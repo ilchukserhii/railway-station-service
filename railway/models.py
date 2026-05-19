@@ -213,6 +213,12 @@ class Order(models.Model):
         related_name="orders"
     )
 
+    @property
+    def total_price(self):
+        return sum(
+            ticket.trip.price for ticket in self.tickets.all()
+        )
+
     class Meta:
         ordering = ["-created_at"]
 
