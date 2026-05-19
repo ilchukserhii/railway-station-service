@@ -1,7 +1,22 @@
+import pathlib
+import uuid
+
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.text import slugify
 
 from railway_station_service import settings
+
+
+def image_path(instance, filename):
+    model_name = instance.__class__.__name__.lower()
+
+    filename = (
+        f"{slugify(str(instance))}-{uuid.uuid4()}"
+        f"{pathlib.Path(filename).suffix}"
+    )
+
+    return pathlib.Path(f"upload/{model_name}s/") / filename
 
 
 class Route(models.Model):
@@ -67,6 +82,11 @@ class Crew(models.Model):
         max_length=30,
         choices=RoleChoices.choices,
     )
+    photo = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to=image_path,
+    )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"
@@ -129,6 +149,11 @@ class Train(models.Model):
         on_delete=models.SET_NULL,
         related_name="trains",
         null=True,
+    )
+    image = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to=image_path,
     )
 
     def __str__(self):
