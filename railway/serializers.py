@@ -43,13 +43,25 @@ class RouteRetrieveSerializer(serializers.ModelSerializer):
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
-        fields = ("id", "first_name", "last_name", "role")
+        fields = ("id", "first_name", "last_name", "role", "photo")
+
+
+class CrewImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Crew
+        fields = ("id", "photo")
 
 
 class TrainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Train
-        fields = ("id", "name", "wagons_num", "seats_in_wagon", "train_type")
+        fields = ("id", "name", "wagons_num", "seats_in_wagon", "train_type", "image")
+
+
+class TrainImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Train
+        fields = ("id", "image")
 
 
 class TrainListSerializer(TrainSerializer):

@@ -3,14 +3,16 @@ from datetime import datetime
 from django.db.models import Q, F
 from django.db.models.aggregates import Count
 from django.utils import timezone
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from railway.models import Train, Trip, Order, TrainType, Crew, Station, Route
 from railway.serializers import TrainSerializer, TripListSerializer, \
     TripSerializer, OrderListSerializer, OrderSerializer, OrderRetrieveSerializer, TripRetrieveSerializer, \
-    TrainTypeSerializer, CrewSerializer, StationSerializer, RouteSerializer
+    TrainTypeSerializer, CrewSerializer, StationSerializer, RouteSerializer, TrainImageSerializer, CrewImageSerializer
 
 
 class TripViewSet(viewsets.ModelViewSet):
@@ -116,30 +118,64 @@ class OrderViewSet(
 
 
 class TrainViewSet(viewsets.ModelViewSet):
-    queryset = Train.objects.all()
+    queryset = Train.objects.all().order_by("id")
     serializer_class = TrainSerializer
     permission_classes = (IsAdminUser,)
 
+    def get_serializer_class(self):
+        if self.action == "upload_image":
+            return TrainImageSerializer
+        return TrainSerializer
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+    )
+    def upload_image(self, request, pk=None):
+        train = self.get_object()
+        serializer = self.get_serializer(train, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class TrainTypeViewSet(viewsets.ModelViewSet):
-    queryset = TrainType.objects.all()
+    queryset = TrainType.objects.all().order_by("id")
     serializer_class = TrainTypeSerializer
     permission_classes = (IsAdminUser,)
 
 
 class CrewViewSet(viewsets.ModelViewSet):
-    queryset = Crew.objects.all()
+    queryset = Crew.objects.all().order_by("id")
     serializer_class = CrewSerializer
     permission_classes = (IsAdminUser,)
 
+    def get_serializer_class(self):
+        if self.action == "upload_image":
+            return CrewImageSerializer
+        return CrewSerializer
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+    )
+    def upload_image(self, request, pk=None):
+        crew = self.get_object()
+        serializer = self.get_serializer(crew, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class StationViewSet(viewsets.ModelViewSet):
-    queryset = Station.objects.all()
+    queryset = Station.objects.all().order_by("id")
     serializer_class = StationSerializer
     permission_classes = (IsAdminUser,)
 
 
 class RouteViewSet(viewsets.ModelViewSet):
-    queryset = Route.objects.all()
+    queryset = Route.objects.all().order_by("id")
     serializer_class = RouteSerializer
     permission_classes = (IsAdminUser,)
