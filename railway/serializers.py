@@ -1,4 +1,5 @@
 from django.db import transaction
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -87,10 +88,7 @@ class TripListSerializer(serializers.ModelSerializer):
     route = serializers.StringRelatedField(
         read_only=True
     )
-    train = serializers.SlugRelatedField(
-        read_only=True,
-        slug_field="train_type.name",
-    )
+    train = serializers.SerializerMethodField()
     crew = serializers.SerializerMethodField()
     tickets_available = serializers.IntegerField(read_only=True)
 
@@ -98,6 +96,7 @@ class TripListSerializer(serializers.ModelSerializer):
         model = Trip
         fields = ("id", "route", "price", "train", "departure_time", "arrival_time", "crew", "tickets_available")
 
+    @extend_schema_field(serializers.CharField)
     def get_crew(self, obj):
         roles = [member.role for member in obj.crew.all()]
 
@@ -105,6 +104,10 @@ class TripListSerializer(serializers.ModelSerializer):
             "members_count": len(roles),
             "roles": roles,
         }
+
+    @extend_schema_field(serializers.CharField)
+    def get_train(self, obj):
+        return obj.train.train_type.name
 
 
 class TripForTrainSerializer(serializers.ModelSerializer):
@@ -224,6 +227,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         model = Order
         fields = ("id", "created_at", "tickets_count", "departure_time", "route", "total_price")
 
+    @extend_schema_field(serializers.DateTimeField)
     def get_departure_time(self, obj):
         ticket = obj.tickets.all()
 
@@ -231,6 +235,7 @@ class OrderListSerializer(serializers.ModelSerializer):
             return ticket[0].trip.departure_time
         return None
 
+    @extend_schema_field(serializers.CharField)
     def get_route(self, obj):
         ticket = obj.tickets.all()
 
@@ -249,6 +254,7 @@ class OrderRetrieveSerializer(OrderSerializer):
         model = Order
         fields = ("id", "created_at", "trip", "tickets", "total_price")
 
+    @extend_schema_field(serializers.CharField)
     def get_trip(self, obj):
         ticket = obj.tickets.all()
 

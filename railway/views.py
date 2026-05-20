@@ -3,6 +3,8 @@ from datetime import datetime
 from django.db.models import Q, F
 from django.db.models.aggregates import Count
 from django.utils import timezone
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
@@ -81,6 +83,33 @@ class TripViewSet(viewsets.ModelViewSet):
             return [IsAdminUser()]
         return [AllowAny()]
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="departure",
+                type=OpenApiTypes.DATE,
+                description="Filter by departure time (ex. ?departure=2026-07-01)",
+            ),
+            OpenApiParameter(
+                name="arrival",
+                type=OpenApiTypes.DATE,
+                description="Filter by arrival time (ex. ?arrival=2026-07-01)",
+            ),
+            OpenApiParameter(
+                name="route",
+                type=OpenApiTypes.STR,
+                description="Filter by route source & destination (ex. ?route=Kyiv)",
+            ),
+            OpenApiParameter(
+                name="train",
+                type=OpenApiTypes.STR,
+                description="Filter by train type (ex. ?train=Intercity)",
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class OrderViewSet(
     mixins.ListModelMixin,
@@ -129,6 +158,23 @@ class OrderViewSet(
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="is_active",
+                type=OpenApiTypes.BOOL,
+                description="Filter by is_active order (ex. ?is_active=true)",
+            ),
+            OpenApiParameter(
+                name="route",
+                type=OpenApiTypes.STR,
+                description="Filter by route source & destination (ex. ?route=Kyiv)",
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class TrainViewSet(
