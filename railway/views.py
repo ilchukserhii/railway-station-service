@@ -15,6 +15,20 @@ from railway.serializers import TrainSerializer, TripListSerializer, \
     TrainTypeSerializer, CrewSerializer, StationSerializer, RouteSerializer, TrainImageSerializer, CrewImageSerializer
 
 
+class UploadImageMixin:
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+    )
+    def upload_image(self, request, pk=None):
+        obj = self.get_object()
+        serializer = self.get_serializer(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.all()
 
@@ -104,7 +118,7 @@ class OrderViewSet(
                 Q(tickets__trip__route__destination__name__icontains=route)
             )
 
-        return queryset.distinct()
+        return queryset.distinct().order_by("id")
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -117,7 +131,10 @@ class OrderViewSet(
         serializer.save(user=self.request.user)
 
 
-class TrainViewSet(viewsets.ModelViewSet):
+class TrainViewSet(
+    UploadImageMixin,
+    viewsets.ModelViewSet
+):
     queryset = Train.objects.all().order_by("id")
     serializer_class = TrainSerializer
     permission_classes = (IsAdminUser,)
@@ -127,18 +144,6 @@ class TrainViewSet(viewsets.ModelViewSet):
             return TrainImageSerializer
         return TrainSerializer
 
-    @action(
-        methods=["POST"],
-        detail=True,
-        url_path="upload-image",
-    )
-    def upload_image(self, request, pk=None):
-        train = self.get_object()
-        serializer = self.get_serializer(train, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class TrainTypeViewSet(viewsets.ModelViewSet):
     queryset = TrainType.objects.all().order_by("id")
@@ -146,7 +151,10 @@ class TrainTypeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminUser,)
 
 
-class CrewViewSet(viewsets.ModelViewSet):
+class CrewViewSet(
+    UploadImageMixin,
+    viewsets.ModelViewSet
+):
     queryset = Crew.objects.all().order_by("id")
     serializer_class = CrewSerializer
     permission_classes = (IsAdminUser,)
@@ -155,18 +163,6 @@ class CrewViewSet(viewsets.ModelViewSet):
         if self.action == "upload_image":
             return CrewImageSerializer
         return CrewSerializer
-
-    @action(
-        methods=["POST"],
-        detail=True,
-        url_path="upload-image",
-    )
-    def upload_image(self, request, pk=None):
-        crew = self.get_object()
-        serializer = self.get_serializer(crew, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class StationViewSet(viewsets.ModelViewSet):
