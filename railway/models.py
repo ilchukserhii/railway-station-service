@@ -130,6 +130,17 @@ class Trip(models.Model):
         validators=[MinValueValidator(1)],
     )
 
+    @property
+    def travel_time(self):
+        duration = self.arrival_time - self.departure_time
+
+        total_seconds = int(duration.total_seconds())
+
+        hours, remainder = divmod(total_seconds, 3600)
+        minutes = remainder // 60
+
+        return f"{hours}h {minutes}m"
+
     def clean(self):
         if not self.arrival_time > self.departure_time:
             raise ValidationError(

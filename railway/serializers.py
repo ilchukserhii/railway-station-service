@@ -259,10 +259,21 @@ class TripRetrieveSerializer(TripSerializer):
     taken_places = TicketForTripSerializer(
         source="tickets", many=True, read_only=True
     )
+    travel_time = serializers.CharField(read_only=True)
 
     class Meta:
         model = Trip
-        fields = ("id", "route", "price", "train", "taken_places", "crew")
+        fields = (
+            "id",
+            "route",
+            "departure_time",
+            "arrival_time",
+            "travel_time",
+            "price", 
+            "train",
+            "taken_places",
+            "crew"
+        )
 
 
 class OrderListSerializer(serializers.ModelSerializer):
