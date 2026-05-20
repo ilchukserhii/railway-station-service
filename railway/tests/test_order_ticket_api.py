@@ -3,7 +3,6 @@ from datetime import timedelta, datetime
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
-from django.db.migrations import serializer
 from django.db.models import Count
 from django.test import TestCase
 
@@ -134,7 +133,7 @@ class UnauthorizedOrderTest(TestCase):
 
 class TicketModelTest(TestCase):
     def test_validate_ticket(self):
-        with self.assertRaisesMessage(ValidationError):
+        with self.assertRaises(ValidationError):
             sample_ticket(
                 wagon_num=11,
                 seat=11,
