@@ -1,15 +1,26 @@
 from django.db import transaction
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from railway.models import Train, TrainType, Station, Route, Trip, Crew, Ticket, Order
+from railway.models import (
+    Train,
+    TrainType,
+    Station,
+    Route,
+    Trip,
+    Crew,
+    Ticket,
+    Order
+)
 
 
 class StationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Station
         fields = ("id", "name", "latitude", "longitude")
+
 
 class StationListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,8 +35,14 @@ class RouteSerializer(serializers.ModelSerializer):
 
 
 class RouteListSerializer(serializers.ModelSerializer):
-    source = serializers.SlugRelatedField(slug_field="name", read_only=True)
-    destination = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    source = serializers.SlugRelatedField(
+        slug_field="name",
+        read_only=True
+    )
+    destination = serializers.SlugRelatedField(
+        slug_field="name",
+        read_only=True
+    )
 
     class Meta:
         model = Route
@@ -56,7 +73,14 @@ class CrewImageSerializer(serializers.ModelSerializer):
 class TrainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Train
-        fields = ("id", "name", "wagons_num", "seats_in_wagon", "train_type", "image")
+        fields = (
+            "id",
+            "name",
+            "wagons_num",
+            "seats_in_wagon",
+            "train_type",
+            "image"
+        )
 
 
 class TrainImageSerializer(serializers.ModelSerializer):
@@ -81,22 +105,37 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
-        fields = ("id", "route", "price", "train", "departure_time", "arrival_time", "crew")
+        fields = (
+            "id",
+            "route",
+            "price",
+            "train",
+            "departure_time",
+            "arrival_time",
+            "crew"
+        )
 
 
 class TripListSerializer(serializers.ModelSerializer):
-    route = serializers.StringRelatedField(
-        read_only=True
-    )
+    route = serializers.StringRelatedField(read_only=True)
     train = serializers.SerializerMethodField()
     crew = serializers.SerializerMethodField()
     tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Trip
-        fields = ("id", "route", "price", "train", "departure_time", "arrival_time", "crew", "tickets_available")
+        fields = (
+            "id",
+            "route",
+            "price",
+            "train",
+            "departure_time",
+            "arrival_time",
+            "crew",
+            "tickets_available"
+        )
 
-    @extend_schema_field(serializers.CharField)
+    @extend_schema_field(OpenApiTypes.OBJECT)
     def get_crew(self, obj):
         roles = [member.role for member in obj.crew.all()]
 
@@ -133,12 +172,19 @@ class TrainRetrieveSerializer(TrainSerializer):
 
     class Meta:
         model = Train
-        fields = ("id", "name", "wagons_num", "seats_in_wagon", "train_type", "trips")
+        fields = (
+            "id",
+            "name",
+            "wagons_num",
+            "seats_in_wagon",
+            "train_type",
+            "trips"
+        )
 
 
 class TicketSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
-        data = super(TicketSerializer, self).validate(attrs=attrs)
+        data = super().validate(attrs=attrs)
         Ticket.validate_ticket(
             attrs["wagon_num"],
             attrs["seat"],
@@ -185,6 +231,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
             return order
 
+
 class TicketListSerializer(serializers.ModelSerializer):
     trip = TripForTicketSerializer(read_only=True)
 
@@ -212,6 +259,7 @@ class TripRetrieveSerializer(TripSerializer):
     taken_places = TicketForTripSerializer(
         source="tickets", many=True, read_only=True
     )
+
     class Meta:
         model = Trip
         fields = ("id", "route", "price", "train", "taken_places", "crew")
@@ -221,11 +269,22 @@ class OrderListSerializer(serializers.ModelSerializer):
     tickets_count = serializers.IntegerField(read_only=True)
     departure_time = serializers.SerializerMethodField()
     route = serializers.SerializerMethodField()
-    total_price = serializers.DecimalField(max_digits=8, decimal_places=2, read_only=True)
+    total_price = serializers.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        read_only=True
+    )
 
     class Meta:
         model = Order
-        fields = ("id", "created_at", "tickets_count", "departure_time", "route", "total_price")
+        fields = (
+            "id",
+            "created_at",
+            "tickets_count",
+            "departure_time",
+            "route",
+            "total_price"
+        )
 
     @extend_schema_field(serializers.DateTimeField)
     def get_departure_time(self, obj):
@@ -248,13 +307,17 @@ class OrderListSerializer(serializers.ModelSerializer):
 class OrderRetrieveSerializer(OrderSerializer):
     trip = serializers.SerializerMethodField()
     tickets = TicketForOrderSerializer(many=True, read_only=True)
-    total_price = serializers.DecimalField(max_digits=8, decimal_places=2, read_only=True)
+    total_price = serializers.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        read_only=True
+    )
 
     class Meta:
         model = Order
         fields = ("id", "created_at", "trip", "tickets", "total_price")
 
-    @extend_schema_field(serializers.CharField)
+    @extend_schema_field(TripForTicketSerializer)
     def get_trip(self, obj):
         ticket = obj.tickets.all()
 
