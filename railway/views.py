@@ -7,14 +7,35 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from railway.models import Train, Trip, Order, TrainType, Crew, Station, Route
-from railway.serializers import TrainSerializer, TripListSerializer, \
-    TripSerializer, OrderListSerializer, OrderSerializer, OrderRetrieveSerializer, TripRetrieveSerializer, \
-    TrainTypeSerializer, CrewSerializer, StationSerializer, RouteSerializer, TrainImageSerializer, CrewImageSerializer
+from railway.models import (
+    Train,
+    Trip,
+    Order,
+    TrainType,
+    Crew,
+    Station,
+    Route
+)
+from railway.serializers import (
+    TrainSerializer,
+    TripListSerializer,
+    TripSerializer,
+    OrderListSerializer,
+    OrderSerializer,
+    OrderRetrieveSerializer,
+    TripRetrieveSerializer,
+    TrainTypeSerializer,
+    CrewSerializer,
+    StationSerializer,
+    RouteSerializer,
+    TrainImageSerializer,
+    CrewImageSerializer
+)
 
 
 class UploadImageMixin:
@@ -39,23 +60,42 @@ class TripViewSet(viewsets.ModelViewSet):
         arrival = self.request.query_params.get("arrival")
         route = self.request.query_params.get("route")
         train = self.request.query_params.get("train")
-        queryset = Trip.objects.select_related(
+        queryset = (
+            Trip.objects.select_related(
                 "route",
                 "route__source",
                 "route__destination",
                 "train",
                 "train__train_type",
-            ).prefetch_related(
-                "crew"
-            ).annotate(tickets_available=F("train__seats_in_wagon") * F("train__wagons_num")
-                       - Count("tickets", distinct=True))
+            )
+            .prefetch_related(
+                "crew",
+            )
+            .annotate(
+                tickets_available=(
+                        F("train__seats_in_wagon")
+                        * F("train__wagons_num")
+                        - Count("tickets", distinct=True)
+                )
+            )
+        )
 
         if departure:
-            date = datetime.strptime(departure, "%Y-%m-%d").date()
+            try:
+                date = datetime.strptime(departure, "%Y-%m-%d").date()
+            except ValueError:
+                raise ValidationError(
+                    {"departure": "Departure must be in YYYY-MM-DD format"}
+                )
             queryset = queryset.filter(departure_time__date=date)
 
         if arrival:
-            date = datetime.strptime(arrival, "%Y-%m-%d").date()
+            try:
+                date = datetime.strptime(arrival, "%Y-%m-%d").date()
+            except ValueError:
+                raise ValidationError(
+                    {"arrival": "Arrival must be in YYYY-MM-DD format"}
+                )
             queryset = queryset.filter(arrival_time__date=date)
 
         if route:
@@ -65,7 +105,9 @@ class TripViewSet(viewsets.ModelViewSet):
             )
 
         if train:
-            queryset = queryset.filter(train__train_type__name__icontains=train)
+            queryset = (
+                queryset.filter(train__train_type__name__icontains=train)
+            )
 
         return queryset.order_by("id")
 
@@ -74,8 +116,6 @@ class TripViewSet(viewsets.ModelViewSet):
             return TripListSerializer
         if self.action == "retrieve":
             return TripRetrieveSerializer
-        if self.action in ["create", "update", "partial_update", "destroy"]:
-            return TripSerializer
         return TripSerializer
 
     def get_permissions(self):
@@ -88,17 +128,24 @@ class TripViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 name="departure",
                 type=OpenApiTypes.DATE,
-                description="Filter by departure time (ex. ?departure=2026-07-01)",
+                description=(
+                        "Filter by departure time (ex. ?departure=2026-07-01)"
+                ),
             ),
             OpenApiParameter(
                 name="arrival",
                 type=OpenApiTypes.DATE,
-                description="Filter by arrival time (ex. ?arrival=2026-07-01)",
+                description=(
+                        "Filter by arrival time (ex. ?arrival=2026-07-01)"
+                ),
             ),
             OpenApiParameter(
                 name="route",
                 type=OpenApiTypes.STR,
-                description="Filter by route source & destination (ex. ?route=Kyiv)",
+                description=(
+                        "Filter by route source & destination "
+                        "(ex. ?route=Kyiv)"
+                ),
             ),
             OpenApiParameter(
                 name="train",
@@ -118,28 +165,33 @@ class OrderViewSet(
     GenericViewSet,
 ):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         is_active = self.request.query_params.get("is_active")
         route = self.request.query_params.get("route")
 
-        queryset = (Order.objects.filter(user=self.request.user)
-        .annotate(tickets_count=Count("tickets"))
-        .prefetch_related(
-            "tickets",
-            "tickets__trip",
-            "tickets__trip__route",
-            "tickets__trip__route__source",
-            "tickets__trip__route__destination",
-            "tickets__trip__train",
-            "tickets__trip__train__train_type",
-            "tickets__trip__crew"
-        ))
+        queryset = (
+            Order.objects.filter(user=self.request.user)
+            .annotate(
+                tickets_count=Count("tickets")
+            )
+            .prefetch_related(
+                "tickets",
+                "tickets__trip",
+                "tickets__trip__route",
+                "tickets__trip__route__source",
+                "tickets__trip__route__destination",
+                "tickets__trip__train",
+                "tickets__trip__train__train_type",
+                "tickets__trip__crew",
+            )
+        )
 
-        if is_active:
-            queryset = queryset.filter(tickets__trip__departure_time__gte=timezone.now())
+        if is_active in ["true", "1"]:
+            queryset = queryset.filter(
+                tickets__trip__departure_time__gte=timezone.now()
+            )
 
         if route:
             queryset = queryset.filter(
@@ -169,7 +221,10 @@ class OrderViewSet(
             OpenApiParameter(
                 name="route",
                 type=OpenApiTypes.STR,
-                description="Filter by route source & destination (ex. ?route=Kyiv)",
+                description=(
+                        "Filter by route source & destination "
+                        "(ex. ?route=Kyiv)"
+                ),
             )
         ]
     )
