@@ -2,6 +2,7 @@ import pathlib
 import uuid
 
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.text import slugify
 
@@ -30,7 +31,17 @@ class Route(models.Model):
         on_delete=models.CASCADE,
         related_name="destination_routes"
     )
-    distance = models.IntegerField()
+    distance = models.IntegerField(
+        validators=[MinValueValidator(1)],
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["source", "destination"],
+                name="unique_route",
+            )
+        ]
 
     def clean(self):
         if self.destination == self.source:
@@ -42,21 +53,24 @@ class Route(models.Model):
     def save(
         self,
         *,
-        force_insert = False,
-        force_update = False,
-        using = None,
-        update_fields = None,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
     ):
         self.full_clean()
         return super().save(
-            force_insert = force_insert,
-            force_update = force_update,
-            using = using,
-            update_fields = update_fields,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
         )
 
     def __str__(self):
-        return f"{self.source.name} -> {self.destination.name} (distance: {self.distance} km)"
+        return (
+            f"{self.source.name} -> {self.destination.name} "
+            f"(distance: {self.distance} km)"
+        )
 
 
 class Station(models.Model):
@@ -65,7 +79,10 @@ class Station(models.Model):
     longitude = models.FloatField()
 
     def __str__(self):
-        return f"Station: {self.name}, coordinates: {self.latitude}, {self.longitude}"
+        return (
+            f"Station: {self.name}, "
+            f"coordinates: {self.latitude}, {self.longitude}"
+        )
 
 
 class Crew(models.Model):
@@ -91,21 +108,26 @@ class Crew(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"
 
+
 class Trip(models.Model):
-    route = models.ForeignKey("Route", on_delete=models.CASCADE, related_name="trips")
+    route = models.ForeignKey(
+        "Route",
+        on_delete=models.CASCADE,
+        related_name="trips"
+    )
     train = models.ForeignKey(
         "Train",
         on_delete=models.SET_NULL,
         related_name="trips",
         null=True,
     )
-    departure_time = models.DateTimeField()
-    arrival_time = models.DateTimeField()
+    departure_time = models.DateTimeField(db_index=True)
+    arrival_time = models.DateTimeField(db_index=True)
     crew = models.ManyToManyField("Crew", related_name="trips")
     price = models.DecimalField(
         max_digits=8,
         decimal_places=2,
-        default=1000,
+        validators=[MinValueValidator(1)],
     )
 
     def clean(self):
@@ -117,17 +139,17 @@ class Trip(models.Model):
     def save(
         self,
         *,
-        force_insert = False,
-        force_update = False,
-        using = None,
-        update_fields = None,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
     ):
         self.full_clean()
         return super().save(
-            force_insert = force_insert,
-            force_update = force_update,
-            using = using,
-            update_fields = update_fields,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
         )
 
     class Meta:
@@ -136,14 +158,20 @@ class Trip(models.Model):
     def __str__(self):
         return (
             f"Trip: {self.route}, "
-            f"departure - {self.departure_time}, arrival -{self.arrival_time}, "
+            f"departure - {self.departure_time}, "
+            f"arrival -{self.arrival_time}, "
             f"Train: {self.train}"
         )
 
+
 class Train(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    wagons_num = models.IntegerField()
-    seats_in_wagon = models.IntegerField()
+    wagons_num = models.IntegerField(
+        validators=[MinValueValidator(1)],
+    )
+    seats_in_wagon = models.IntegerField(
+        validators=[MinValueValidator(1)],
+    )
     train_type = models.ForeignKey(
         "TrainType",
         on_delete=models.SET_NULL,
@@ -174,8 +202,16 @@ class TrainType(models.Model):
 class Ticket(models.Model):
     wagon_num = models.IntegerField()
     seat = models.IntegerField()
-    trip = models.ForeignKey("Trip", on_delete=models.CASCADE, related_name="tickets")
-    order = models.ForeignKey("Order", on_delete=models.CASCADE, related_name="tickets")
+    trip = models.ForeignKey(
+        "Trip",
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        "Order",
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
 
     @staticmethod
     def validate_ticket(wagon_num, seat, train, error_to_raise):
@@ -205,17 +241,17 @@ class Ticket(models.Model):
     def save(
         self,
         *,
-        force_insert = False,
-        force_update = False,
-        using = None,
-        update_fields = None,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
     ):
         self.full_clean()
         return super().save(
-            force_insert = force_insert,
-            force_update = force_update,
-            using = using,
-            update_fields = update_fields,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
         )
 
     class Meta:
@@ -227,7 +263,10 @@ class Ticket(models.Model):
         ]
 
     def __str__(self):
-        return f"{str(self.trip)} (wagon number: {self.wagon_num}, seat: {self.seat})"
+        return (
+            f"{str(self.trip)} "
+            f"(wagon number: {self.wagon_num}, seat: {self.seat})"
+        )
 
 
 class Order(models.Model):
