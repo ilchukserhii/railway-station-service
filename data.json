@@ -1,0 +1,571 @@
+[
+{
+  "model": "sessions.session",
+  "pk": "07xw2ajhgsw2v3y34reisf8sh7ox56j7",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWmG1raMS_ecgcx0poIaSCisjHdXEha6_e-9_zI9bevQb1WXfhRzMY05_W5M-aHTDuRO0222eZ7WZWS7K_ag1Xaz6PN6uH8HA9XhWyNCzFE1MFFCrw2HHEJuE2jrMraRVJqA5GMBlgTeYVFAD-L4zCWa9wfqzjgO:1wPFUB:4mnBzHbDSk5ERw9GPORaYYv6ghr0d45hGk4aQ8fsf9Q",
+    "expire_date": "2026-06-02T08:07:31.860Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "2u16y6lbxcgn45y08zuordpk15v7zo2q",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAUBf-FtSFgeLp07zeQ-wCpGkhKu2r8d23ShW7PzJxNJFiXmtaR5zSxuAgtTr8bAj1z2wE_oN27pN6WeUK5K_KgQ94659f1cP8OKoz6rY2hYhxGb2y2nlGVELLXBWOgooiUJ3Du7KlkHYJFNJqRjNMAgVVk8f4A9f84oQ:1wNoRU:ly4VdXnE5sBl526W16RffJLcMrMwJAEhPv4aFtvBmQc",
+    "expire_date": "2026-05-29T09:02:48.949Z"
+  }
+},
+{
+  "model": "railway.route",
+  "pk": 1,
+  "fields": {
+    "source": 1,
+    "destination": 2,
+    "distance": 530
+  }
+},
+{
+  "model": "railway.route",
+  "pk": 2,
+  "fields": {
+    "source": 2,
+    "destination": 3,
+    "distance": 620
+  }
+},
+{
+  "model": "railway.route",
+  "pk": 3,
+  "fields": {
+    "source": 3,
+    "destination": 5,
+    "distance": 865
+  }
+},
+{
+  "model": "railway.route",
+  "pk": 4,
+  "fields": {
+    "source": 1,
+    "destination": 4,
+    "distance": 570
+  }
+},
+{
+  "model": "railway.route",
+  "pk": 5,
+  "fields": {
+    "source": 4,
+    "destination": 2,
+    "distance": 496
+  }
+},
+{
+  "model": "railway.station",
+  "pk": 1,
+  "fields": {
+    "name": "Odesa Main",
+    "latitude": 46.4825,
+    "longitude": 30.7233
+  }
+},
+{
+  "model": "railway.station",
+  "pk": 2,
+  "fields": {
+    "name": "Kyiv Main",
+    "latitude": 50.4501,
+    "longitude": 30.5234
+  }
+},
+{
+  "model": "railway.station",
+  "pk": 3,
+  "fields": {
+    "name": "Lviv Main",
+    "latitude": 49.8397,
+    "longitude": 24.0297
+  }
+},
+{
+  "model": "railway.station",
+  "pk": 4,
+  "fields": {
+    "name": "Dnipro Main",
+    "latitude": 48.4647,
+    "longitude": 35.0462
+  }
+},
+{
+  "model": "railway.station",
+  "pk": 5,
+  "fields": {
+    "name": "Kharkiv Main",
+    "latitude": 49.9935,
+    "longitude": 36.2304
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 1,
+  "fields": {
+    "first_name": "Vasilii",
+    "last_name": "Ivanov",
+    "role": "driver",
+    "photo": "upload/crews/vasilii-ivanov-driver-e8634628-a443-48bd-b828-7ce6281f5371.avif"
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 2,
+  "fields": {
+    "first_name": "Ivan",
+    "last_name": "Vanin",
+    "role": "driver",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 3,
+  "fields": {
+    "first_name": "Valentina",
+    "last_name": "Petrova",
+    "role": "assistant_driver",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 4,
+  "fields": {
+    "first_name": "Aleksandr",
+    "last_name": "Boyko",
+    "role": "assistant_driver",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 5,
+  "fields": {
+    "first_name": "Kateryna",
+    "last_name": "Marchenko",
+    "role": "conductor",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 6,
+  "fields": {
+    "first_name": "Oksana",
+    "last_name": "Danylova",
+    "role": "senior_conductor",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 7,
+  "fields": {
+    "first_name": "Taras",
+    "last_name": "Melnyk",
+    "role": "conductor",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 8,
+  "fields": {
+    "first_name": "Bohdan",
+    "last_name": "Polishchuk",
+    "role": "senior_conductor",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 9,
+  "fields": {
+    "first_name": "Serhii",
+    "last_name": "Kravchenko",
+    "role": "train_manager",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 10,
+  "fields": {
+    "first_name": "Natalia",
+    "last_name": "Koval",
+    "role": "train_manager",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 11,
+  "fields": {
+    "first_name": "Yaroslav",
+    "last_name": "Hrytsenko",
+    "role": "technician",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.crew",
+  "pk": 12,
+  "fields": {
+    "first_name": "Dmytro",
+    "last_name": "Oliinyk",
+    "role": "technician",
+    "photo": ""
+  }
+},
+{
+  "model": "railway.trip",
+  "pk": 1,
+  "fields": {
+    "route": 1,
+    "train": 1,
+    "departure_time": "2026-06-01T23:15:00Z",
+    "arrival_time": "2026-06-02T07:00:00Z",
+    "price": "650.00",
+    "crew": [
+      1,
+      3,
+      5,
+      9,
+      11
+    ]
+  }
+},
+{
+  "model": "railway.trip",
+  "pk": 2,
+  "fields": {
+    "route": 2,
+    "train": 3,
+    "departure_time": "2026-05-29T16:40:00Z",
+    "arrival_time": "2026-05-30T01:20:00Z",
+    "price": "700.00",
+    "crew": [
+      2,
+      3,
+      5,
+      6,
+      10,
+      11
+    ]
+  }
+},
+{
+  "model": "railway.trip",
+  "pk": 3,
+  "fields": {
+    "route": 3,
+    "train": 7,
+    "departure_time": "2026-05-20T22:20:00Z",
+    "arrival_time": "2026-05-21T11:30:00Z",
+    "price": "1200.00",
+    "crew": [
+      2,
+      4,
+      6,
+      7,
+      8,
+      10
+    ]
+  }
+},
+{
+  "model": "railway.trip",
+  "pk": 4,
+  "fields": {
+    "route": 4,
+    "train": 6,
+    "departure_time": "2026-05-16T06:45:00Z",
+    "arrival_time": "2026-05-16T19:40:00Z",
+    "price": "800.00",
+    "crew": [
+      1,
+      4,
+      6,
+      8,
+      11,
+      12
+    ]
+  }
+},
+{
+  "model": "railway.trip",
+  "pk": 5,
+  "fields": {
+    "route": 5,
+    "train": 8,
+    "departure_time": "2026-05-27T11:00:00Z",
+    "arrival_time": "2026-05-27T17:30:00Z",
+    "price": "600.00",
+    "crew": [
+      2,
+      5,
+      9,
+      11
+    ]
+  }
+},
+{
+  "model": "railway.train",
+  "pk": 1,
+  "fields": {
+    "name": "IC-721",
+    "wagons_num": 10,
+    "seats_in_wagon": 68,
+    "train_type": 1,
+    "image": "upload/trains/train-ic-721-type-intercity-wagons-10-1e199cba-2555-4d29-8835-808b9551c9bb.jpg"
+  }
+},
+{
+  "model": "railway.train",
+  "pk": 2,
+  "fields": {
+    "name": "IC-705",
+    "wagons_num": 8,
+    "seats_in_wagon": 64,
+    "train_type": 4,
+    "image": ""
+  }
+},
+{
+  "model": "railway.train",
+  "pk": 3,
+  "fields": {
+    "name": "Night-015",
+    "wagons_num": 14,
+    "seats_in_wagon": 36,
+    "train_type": 3,
+    "image": ""
+  }
+},
+{
+  "model": "railway.train",
+  "pk": 4,
+  "fields": {
+    "name": "Regional-204",
+    "wagons_num": 6,
+    "seats_in_wagon": 72,
+    "train_type": 2,
+    "image": ""
+  }
+},
+{
+  "model": "railway.train",
+  "pk": 5,
+  "fields": {
+    "name": "Suburban-88",
+    "wagons_num": 8,
+    "seats_in_wagon": 90,
+    "train_type": 5,
+    "image": ""
+  }
+},
+{
+  "model": "railway.train",
+  "pk": 6,
+  "fields": {
+    "name": "Black Sea Express",
+    "wagons_num": 12,
+    "seats_in_wagon": 40,
+    "train_type": 3,
+    "image": ""
+  }
+},
+{
+  "model": "railway.train",
+  "pk": 7,
+  "fields": {
+    "name": "Kyiv Intercity",
+    "wagons_num": 9,
+    "seats_in_wagon": 68,
+    "train_type": 1,
+    "image": ""
+  }
+},
+{
+  "model": "railway.train",
+  "pk": 8,
+  "fields": {
+    "name": "HS-001",
+    "wagons_num": 7,
+    "seats_in_wagon": 60,
+    "train_type": 4,
+    "image": ""
+  }
+},
+{
+  "model": "railway.traintype",
+  "pk": 1,
+  "fields": {
+    "name": "Intercity"
+  }
+},
+{
+  "model": "railway.traintype",
+  "pk": 2,
+  "fields": {
+    "name": "Regional"
+  }
+},
+{
+  "model": "railway.traintype",
+  "pk": 3,
+  "fields": {
+    "name": "Night Express"
+  }
+},
+{
+  "model": "railway.traintype",
+  "pk": 4,
+  "fields": {
+    "name": "High-speed"
+  }
+},
+{
+  "model": "railway.traintype",
+  "pk": 5,
+  "fields": {
+    "name": "Suburban"
+  }
+},
+{
+  "model": "railway.ticket",
+  "pk": 1,
+  "fields": {
+    "wagon_num": 3,
+    "seat": 4,
+    "trip": 1,
+    "order": 1
+  }
+},
+{
+  "model": "railway.ticket",
+  "pk": 2,
+  "fields": {
+    "wagon_num": 3,
+    "seat": 5,
+    "trip": 1,
+    "order": 1
+  }
+},
+{
+  "model": "railway.ticket",
+  "pk": 3,
+  "fields": {
+    "wagon_num": 6,
+    "seat": 9,
+    "trip": 4,
+    "order": 2
+  }
+},
+{
+  "model": "railway.ticket",
+  "pk": 4,
+  "fields": {
+    "wagon_num": 3,
+    "seat": 6,
+    "trip": 1,
+    "order": 3
+  }
+},
+{
+  "model": "railway.ticket",
+  "pk": 5,
+  "fields": {
+    "wagon_num": 4,
+    "seat": 6,
+    "trip": 1,
+    "order": 4
+  }
+},
+{
+  "model": "railway.ticket",
+  "pk": 6,
+  "fields": {
+    "wagon_num": 4,
+    "seat": 7,
+    "trip": 1,
+    "order": 4
+  }
+},
+{
+  "model": "railway.order",
+  "pk": 1,
+  "fields": {
+    "created_at": "2026-05-15T09:44:23.602Z",
+    "user": 1
+  }
+},
+{
+  "model": "railway.order",
+  "pk": 2,
+  "fields": {
+    "created_at": "2026-05-15T09:44:47.221Z",
+    "user": 1
+  }
+},
+{
+  "model": "railway.order",
+  "pk": 3,
+  "fields": {
+    "created_at": "2026-05-19T11:34:22.848Z",
+    "user": 2
+  }
+},
+{
+  "model": "railway.order",
+  "pk": 4,
+  "fields": {
+    "created_at": "2026-05-19T11:35:00.389Z",
+    "user": 2
+  }
+},
+{
+  "model": "user.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$smcH9WQsS6n8yd1xWiR5d8$5/2lLVY8upPf5JbXtdc9jwo2tqX9KeldEHekmQ5uOuc=",
+    "last_login": "2026-05-19T08:07:31.859Z",
+    "is_superuser": true,
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-15T09:02:24.964Z",
+    "email": "admin@admin.com",
+    "phone": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$UqN9ZGNInXYLPyvDxKZAn2$Y/6lX1lSgdulN39Xrxyg8C1lWxpcfGUEpilvDCGAkjY=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-19T11:12:43.014Z",
+    "email": "user1@user.com",
+    "phone": "0671234567",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
